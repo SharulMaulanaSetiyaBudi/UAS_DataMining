@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 st.title("Visualization Dashboard")
 
 df = pd.read_csv(
-    "../dataset/WA_Fn-UseC_-Telco-Customer-Churn.csv"
+    "dataset/WA_Fn-UseC_-Telco-Customer-Churn.csv"
 )
 
 # METRIC
