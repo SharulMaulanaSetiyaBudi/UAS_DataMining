@@ -46,7 +46,7 @@ st.subheader("Anggota Kelompok")
 
 st.write("""
 1. Sharul Maulana Setiya Budi - 24051214219
-2. Rafi Athilla F - 24051214213
+2. Rafi Athillah F - 24051214213
 """)
 
 st.success("Project berhasil dijalankan")
