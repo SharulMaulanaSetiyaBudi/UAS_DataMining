@@ -1,6 +1,4 @@
 import streamlit as st
-import pandas as pd
-import random
 
 # =========================
 # TITLE
@@ -60,36 +58,116 @@ st.markdown("---")
 # =========================
 if st.button("🚀 Prediksi"):
 
-    score = 0
+    risk = 0
 
-    if tenure < 12:
-        score += 1
+    # =========================
+    # TENURE
+    # =========================
+    if tenure <= 6:
+        risk += 40
 
-    if monthly > 80:
-        score += 1
+    elif tenure <= 12:
+        risk += 30
 
-    if total < 2000:
-        score += 1
+    elif tenure <= 24:
+        risk += 20
 
+    elif tenure <= 48:
+        risk += 10
+
+    else:
+        risk += 2
+
+    # =========================
+    # MONTHLY CHARGES
+    # =========================
+    if monthly >= 120:
+        risk += 30
+
+    elif monthly >= 90:
+        risk += 20
+
+    elif monthly >= 70:
+        risk += 10
+
+    else:
+        risk += 5
+
+    # =========================
+    # TOTAL CHARGES
+    # =========================
+    if total <= 1000:
+        risk += 25
+
+    elif total <= 3000:
+        risk += 15
+
+    elif total <= 6000:
+        risk += 8
+
+    else:
+        risk += 2
+
+    # =========================
+    # SENIOR CITIZEN
+    # =========================
     if senior == 1:
-        score += 1
+        risk += 10
 
+    # =========================
+    # GENDER
+    # =========================
     if gender == "Female":
-        score += 1
+        risk += 3
+
+    # =========================
+    # NORMALISASI
+    # =========================
+    if risk > 100:
+        risk = 100
 
     # =========================
     # HASIL
     # =========================
-    if score >= 3:
+    st.subheader("📊 Hasil Prediksi")
+
+    st.progress(risk)
+
+    st.write(f"Skor Risiko Churn : {risk}%")
+
+    # =========================
+    # RISIKO TINGGI
+    # =========================
+    if risk >= 70:
 
         st.error(
-            "❌ Pelanggan berpotensi churn."
+            "❌ Pelanggan memiliki risiko churn TINGGI."
         )
 
         st.warning(
-            "Disarankan memberikan promo atau penawaran khusus."
+            "Pelanggan kemungkinan besar berhenti berlangganan."
         )
 
+        st.info(
+            "Disarankan memberikan promo, diskon, atau peningkatan layanan."
+        )
+
+    # =========================
+    # RISIKO SEDANG
+    # =========================
+    elif risk >= 40:
+
+        st.warning(
+            "⚠️ Pelanggan memiliki risiko churn SEDANG."
+        )
+
+        st.info(
+            "Perusahaan perlu menjaga kualitas layanan pelanggan."
+        )
+
+    # =========================
+    # RISIKO RENDAH
+    # =========================
     else:
 
         st.success(
@@ -105,18 +183,16 @@ if st.button("🚀 Prediksi"):
 # =========================
 st.markdown("---")
 
-st.subheader("📌 Keterangan")
+st.subheader("📌 Keterangan Sistem")
 
 st.write("""
-Sistem ini melakukan simulasi prediksi customer churn
-berdasarkan beberapa faktor pelanggan seperti:
+Prediksi customer churn dilakukan berdasarkan:
 
-- Lama berlangganan
-- Biaya bulanan
-- Total pembayaran
+- Lama berlangganan pelanggan
+- Biaya bulanan pelanggan
+- Total pembayaran pelanggan
 - Status senior citizen
-- Jenis kelamin
 
-Semakin tinggi skor risiko maka pelanggan
-diprediksi berpotensi churn.
+Semakin kecil lama berlangganan dan semakin tinggi biaya bulanan,
+maka risiko churn akan semakin tinggi.
 """)
