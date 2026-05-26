@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import shap
 import joblib
 
 # =========================
@@ -13,85 +14,72 @@ model = joblib.load(
 # =========================
 # TITLE
 # =========================
-st.title("📈 Evaluasi Model")
+st.title("📈 Evaluasi Model & Explainable AI")
 
 st.write("""
 Halaman ini menampilkan evaluasi model
-Random Forest dan fitur yang paling
-mempengaruhi customer churn.
+dan Explainable AI menggunakan SHAP.
 """)
 
 st.markdown("---")
 
 # =========================
-# AKURASI
+# METRIC
 # =========================
-st.subheader("🎯 Akurasi Model")
+col1, col2, col3 = st.columns(3)
 
-accuracy = 95
+with col1:
+    st.metric(
+        "Accuracy",
+        "95%"
+    )
 
-st.metric(
-    label="Accuracy",
-    value=f"{accuracy}%"
-)
+with col2:
+    st.metric(
+        "Algorithm",
+        "Random Forest"
+    )
 
-st.success(
-    "Model Random Forest memiliki performa yang baik dalam memprediksi customer churn."
-)
+with col3:
+    st.metric(
+        "AI Explainability",
+        "SHAP"
+    )
 
 st.markdown("---")
 
 # =========================
-# FEATURE IMPORTANCE
+# DATA SAMPLE
 # =========================
-st.subheader("🧠 Explainable AI - Feature Importance")
-
-features = [
-    "Gender",
-    "SeniorCitizen",
-    "Tenure",
-    "MonthlyCharges",
-    "TotalCharges"
-]
-
-importance = model.feature_importances_
-
-# dataframe
-importance_df = pd.DataFrame({
-    "Feature": features,
-    "Importance": importance
+sample_data = pd.DataFrame({
+    "gender": [1, 0, 1, 0, 1],
+    "SeniorCitizen": [0, 1, 0, 0, 1],
+    "tenure": [5, 60, 12, 24, 3],
+    "MonthlyCharges": [90, 50, 70, 80, 120],
+    "TotalCharges": [300, 5000, 1200, 2500, 200]
 })
 
-importance_df = importance_df.sort_values(
-    by="Importance",
-    ascending=False
-)
+# =========================
+# SHAP
+# =========================
+st.subheader("🧠 Explainable AI (SHAP)")
 
-# tampil tabel
-st.dataframe(
-    importance_df,
-    use_container_width=True
+explainer = shap.TreeExplainer(model)
+
+shap_values = explainer.shap_values(
+    sample_data
 )
 
 # =========================
-# GRAFIK
+# SUMMARY PLOT
 # =========================
 fig, ax = plt.subplots()
 
-ax.bar(
-    importance_df["Feature"],
-    importance_df["Importance"]
+shap.summary_plot(
+    shap_values,
+    sample_data,
+    show=False
 )
-
-ax.set_title(
-    "Feature Importance Random Forest"
-)
-
-ax.set_ylabel(
-    "Importance Score"
-)
-
-plt.xticks(rotation=15)
 
 st.pyplot(fig)
 
@@ -103,12 +91,10 @@ st.markdown("---")
 st.subheader("📌 Interpretasi")
 
 st.write("""
-Fitur dengan nilai importance tertinggi
-menjadi faktor paling berpengaruh terhadap
-prediksi customer churn.
+Grafik SHAP menunjukkan fitur yang paling
+mempengaruhi prediksi customer churn.
 
-Contoh:
-- Tenure tinggi → pelanggan cenderung loyal
-- MonthlyCharges tinggi → risiko churn meningkat
-- TotalCharges rendah → pelanggan baru dan berisiko churn
+Semakin besar pengaruh fitur,
+maka semakin tinggi kontribusinya
+terhadap hasil prediksi model.
 """)
