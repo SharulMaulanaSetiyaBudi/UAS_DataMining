@@ -1,23 +1,15 @@
 import streamlit as st
 import pandas as pd
-import joblib
-
-# =========================
-# LOAD MODEL
-# =========================
-model = joblib.load(
-    "model/model.pkl"
-)
+import random
 
 # =========================
 # TITLE
 # =========================
 st.title("🔮 Prediksi Customer Churn")
 
-st.write("""
-Masukkan data pelanggan untuk melakukan
-prediksi customer churn.
-""")
+st.write(
+    "Masukkan data pelanggan untuk melakukan prediksi customer churn."
+)
 
 st.markdown("---")
 
@@ -40,7 +32,7 @@ with col1:
 
     tenure = st.slider(
         "Lama Berlangganan (Bulan)",
-        0,
+        1,
         72,
         12
     )
@@ -49,8 +41,8 @@ with col2:
 
     monthly = st.slider(
         "Biaya Bulanan",
-        0,
-        200,
+        10,
+        150,
         70
     )
 
@@ -61,112 +53,70 @@ with col2:
         1000
     )
 
-# =========================
-# ENCODING
-# =========================
-gender = 1 if gender == "Male" else 0
+st.markdown("---")
 
 # =========================
-# FORMAT DATA
-# =========================
-input_data = pd.DataFrame([{
-    "gender": gender,
-    "SeniorCitizen": senior,
-    "tenure": tenure,
-    "MonthlyCharges": monthly,
-    "TotalCharges": total
-}])
-
-# =========================
-# TAMBAH FITUR KOSONG
-# =========================
-fitur_model = [
-    'gender',
-    'SeniorCitizen',
-    'Partner',
-    'Dependents',
-    'tenure',
-    'PhoneService',
-    'MultipleLines',
-    'InternetService',
-    'OnlineSecurity',
-    'OnlineBackup',
-    'DeviceProtection',
-    'TechSupport',
-    'StreamingTV',
-    'StreamingMovies',
-    'Contract',
-    'PaperlessBilling',
-    'PaymentMethod',
-    'MonthlyCharges',
-    'TotalCharges'
-]
-
-for col in fitur_model:
-
-    if col not in input_data.columns:
-
-        input_data[col] = 0
-
-input_data = input_data[fitur_model]
-
-# =========================
-# PREDICTION
+# PREDIKSI
 # =========================
 if st.button("🚀 Prediksi"):
 
-    prediction = model.predict(
-        input_data
-    )[0]
+    score = 0
 
-    probability = model.predict_proba(
-        input_data
-    )[0]
+    if tenure < 12:
+        score += 1
 
-    churn = round(
-        probability[1] * 100,
-        2
-    )
+    if monthly > 80:
+        score += 1
 
-    not_churn = round(
-        probability[0] * 100,
-        2
-    )
+    if total < 2000:
+        score += 1
 
-    st.markdown("---")
+    if senior == 1:
+        score += 1
 
-    st.subheader("📊 Hasil Prediksi")
+    if gender == "Female":
+        score += 1
 
-    col1, col2 = st.columns(2)
+    # =========================
+    # HASIL
+    # =========================
+    if score >= 3:
 
-    with col1:
-
-        st.metric(
-            "Tidak Churn",
-            f"{not_churn}%"
+        st.error(
+            "❌ Pelanggan berpotensi churn."
         )
 
-    with col2:
-
-        st.metric(
-            "Churn",
-            f"{churn}%"
+        st.warning(
+            "Disarankan memberikan promo atau penawaran khusus."
         )
-
-    st.progress(
-        int(churn)
-    )
-
-    if prediction == 1:
-
-        st.error("""
-⚠️ Customer diprediksi
-berpotensi churn
-""")
 
     else:
 
-        st.success("""
-✅ Customer diprediksi
-tidak churn
+        st.success(
+            "✅ Pelanggan kemungkinan tetap berlangganan."
+        )
+
+        st.info(
+            "Pelanggan memiliki loyalitas yang cukup baik."
+        )
+
+# =========================
+# KETERANGAN
+# =========================
+st.markdown("---")
+
+st.subheader("📌 Keterangan")
+
+st.write("""
+Sistem ini melakukan simulasi prediksi customer churn
+berdasarkan beberapa faktor pelanggan seperti:
+
+- Lama berlangganan
+- Biaya bulanan
+- Total pembayaran
+- Status senior citizen
+- Jenis kelamin
+
+Semakin tinggi skor risiko maka pelanggan
+diprediksi berpotensi churn.
 """)
