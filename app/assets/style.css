@@ -1,0 +1,60 @@
+.stApp {
+    background: linear-gradient(
+        135deg,
+        #0f172a,
+        #1e293b
+    );
+    color: white;
+}
+
+/* Sidebar */
+[data-testid="stSidebar"] {
+    background: #111827;
+}
+
+/* Judul */
+h1, h2, h3, h4 {
+    color: #38bdf8 !important;
+    font-weight: bold;
+}
+
+/* Metric */
+[data-testid="metric-container"] {
+    background: rgba(255,255,255,0.05);
+    border-radius: 15px;
+    padding: 15px;
+    box-shadow: 0px 0px 15px rgba(0,0,0,0.3);
+}
+
+/* Button */
+.stButton>button {
+    background: linear-gradient(
+        90deg,
+        #38bdf8,
+        #6366f1
+    );
+    color: white;
+    border-radius: 12px;
+    border: none;
+    font-weight: bold;
+    padding: 10px 20px;
+}
+
+/* Dataframe */
+[data-testid="stDataFrame"] {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+/* Input */
+.stSelectbox,
+.stSlider,
+.stNumberInput {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+}
+
+/* Card effect */
+.block-container {
+    padding-top: 2rem;
+}
