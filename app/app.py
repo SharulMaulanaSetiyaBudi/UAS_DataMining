@@ -113,7 +113,7 @@ with col2:
 with col3:
     st.metric(
         label="🎯 Accuracy",
-        value="95%"
+        value="80%"
     )
 
 # =========================
